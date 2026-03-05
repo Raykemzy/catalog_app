@@ -191,14 +191,7 @@ class _ProductListPanelState extends State<ProductListPanel> {
           AppSpacing.md,
         ),
         itemBuilder: (context, index) {
-          final hasRefreshBanner = state.isRefreshing;
-          final productStartIndex = hasRefreshBanner ? 1 : 0;
-
-          if (hasRefreshBanner && index == 0) {
-            return const _RefreshingBanner();
-          }
-
-          final productIndex = index - productStartIndex;
+          final productIndex = index;
 
           if (productIndex == state.products.length) {
             if (!state.isLoadingMore) return const SizedBox.shrink();
@@ -236,59 +229,7 @@ class _ProductListPanelState extends State<ProductListPanel> {
           return card;
         },
         separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-        itemCount: state.products.length + 1 + (state.isRefreshing ? 1 : 0),
-      ),
-    );
-  }
-}
-
-class _RefreshingBanner extends StatefulWidget {
-  const _RefreshingBanner();
-
-  @override
-  State<_RefreshingBanner> createState() => _RefreshingBannerState();
-}
-
-class _RefreshingBannerState extends State<_RefreshingBanner>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RotationTransition(
-            turns: _controller,
-            child: Icon(Icons.refresh_rounded, size: 18, color: color),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            'Refreshing products',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: color),
-          ),
-        ],
+        itemCount: state.products.length + 1,
       ),
     );
   }
