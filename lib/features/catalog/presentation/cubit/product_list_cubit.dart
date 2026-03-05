@@ -31,7 +31,7 @@ class ProductListCubit extends Cubit<ProductListState> {
     emit(state.copyWith(query: value));
 
     _debounce = Timer(const Duration(milliseconds: 350), () {
-      refresh();
+      refresh(keepExisting: false);
     });
   }
 
@@ -42,11 +42,11 @@ class ProductListCubit extends Cubit<ProductListState> {
         clearCategory: category == null,
       ),
     );
-    await refresh();
+    await refresh(keepExisting: false);
   }
 
-  Future<void> refresh() async {
-    final hasExistingItems = state.products.isNotEmpty;
+  Future<void> refresh({bool keepExisting = true}) async {
+    final hasExistingItems = keepExisting && state.products.isNotEmpty;
     emit(
       state.copyWith(
         status: hasExistingItems
@@ -85,7 +85,7 @@ class ProductListCubit extends Cubit<ProductListState> {
     await _loadPage();
   }
 
-  Future<void> retry() => refresh();
+  Future<void> retry() => refresh(keepExisting: false);
 
   Future<void> _loadPage({bool reset = false}) async {
     try {
